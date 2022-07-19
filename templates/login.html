@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block content %}
+    <div class="content-section">
+        <form class="form-login" method="POST" action="/login">
+            {{ form.hidden_tag() }}
+            {{ wtf.form_field(form.username) }}
+            {{ wtf.form_field(form.password) }}
+            {{ wtf.form_field(form.remember) }}
+            {{ form.submit(class="btn btn-outline-info") }}
+        </form>
+    </div>
+{% endblock content %}
