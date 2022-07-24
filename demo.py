@@ -1,23 +1,25 @@
-from flask import Flask, render_template, url_for, flash, redirect # allow rendering of html code rather than printing it raw
-from flask_wtf import FlaskForm
-from flask_behind_proxy import FlaskBehindProxy ## add this line to imports
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Length, Email, EqualTo
-#import secrets
+from flask import Flask, render_template, url_for, flash, redirect, request # allow rendering of html code rather than printing it raw
+#from flask import Markup
+#flash(Markup('Please sign in <a href='/'))
+from flask_behind_proxy import FlaskBehindProxy  
 from forms import RegistrationForm, LoginForm
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Boolean
 
 '''
+https://flask.palletsprojects.com/en/2.1.x/patterns/wtforms/ good info
+
 Once you populate you can query the database from the terminal, 
-notice "demo" is the name of my python file
+notice "demo" is the name of my python file, User is the class name and the table name is usertable
 
 python3
-from demo import usertable
-usertable.query.all()  # check the database
+from demo import User  
+User.query.all()  
+from demo import logintable
+logintable.query.column_descriptions
 '''
 
-app = Flask(__name__)                    # this gets the name of the file so Flask knows it's name
+app = Flask(__name__)         #gets the name of this .py file so Flask knows it's name
 proxied = FlaskBehindProxy(app) 
 app.config['SECRET_KEY'] = 'fb93246348ed383a9de5b7e77ff8d579' # be sure to use only the most recent key generated
 #name of the database to create or use
@@ -25,8 +27,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site2.db'
 
 db = SQLAlchemy(app)
 
-#Creates a table in the database named 'usertable"
-class usertable(db.Model):
+#Because of __tablename__ database table is 'usertable"
+class User(db.Model):
+  __tablename__ = 'usertable' #if do not specify the table name is user
   id = db.Column(db.Integer, primary_key=True)
   username = db.Column(db.String(20), unique=True, nullable=False)
   email = db.Column(db.String(120), unique=True, nullable=False)
@@ -34,24 +37,32 @@ class usertable(db.Model):
 
   def __repr__(self):
     return f"usertable('{self.username}', '{self.email}', '{self.password}')"
-#new function to make sure table is created in the database when needed 
-def __init__(self, username, email, password):
-   self.username = username
-   self.email = email
-   self.password = password
+
+
+class logintable(db.Model):
+  #database table name logintable
+  id = db.Column(db.Integer, primary_key=True)
+  logname = db.Column(db.String(20), unique=True, nullable=False)
+  logpass = db.Column(db.String(60), nullable=False)
+  logint = db.Column(db.Integer())
+  logbool = db.Column(db.Boolean, default=False)
+  
+  def __repr__(self):
+    return f"logintable('{self.logname}', '{self.logpass}', '{self.logint}', '{self.logbool}')"    
 
 #new code added to make sure table is created
 db.create_all()
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
-    form = RegistrationForm()
+    form = RegistrationForm(request.form)
     if form.validate_on_submit():
-        user_a = usertable(username=form.username.data, email=form.email.data, password=form.password.data)
-        db.session.add(user_a)
-        db.session.commit()
-        flash(f'Account created for {form.username.data}!', 'success')
-        return redirect(url_for('home'))
+        if request.method == 'POST' and form.validate():
+            user_a = User(username=form.username.data, email=form.email.data, password=form.password.data)
+            db.session.add(user_a)
+            db.session.commit()
+            flash(f'Account created for {form.username.data}!', 'success')
+            return redirect(url_for('home'))
     return render_template('register.html', title='Register', form=form)
 
 @app.route("/")  
@@ -63,10 +74,19 @@ def home():
 def about():
     return render_template('about.html', subtitle='About Page')
 
-@app.route("/login")
+@app.route("/login",methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-    return render_template('login.html', form=form)
+    lform = LoginForm(request.form)
+    if lform.validate_on_submit():
+        if request.method == 'POST' and lform.validate():
+            aa = logintable( logname=lform.logname.data,  
+                            logpass=lform.logpass.data, logint=lform.logint.data, 
+                            logbool=lform.b)
+            db.session.add(aa)
+            db.session.commit()
+            flash(f'Login created for {lform.logname.data}!', 'success')
+            return redirect(url_for('home'))
+    return render_template('login.html', title='Login', form=lform)
 
 
 if __name__ == '__main__':               # this should always be at the end avoids the need for environment variables
