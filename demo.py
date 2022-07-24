@@ -42,20 +42,20 @@ class User(db.Model):
     password = db.Column(db.String(60), nullable=False)
 
     def __repr__(self):
-        return f"usertable('{self.username}', '{self.email}',
-                           '{self.password}')"
+        return f"""usertable('{self.username}', '{self.email}',
+                             '{self.password}')"""
 
 
 class logintable(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    logname = db.Column(db.String(20), unique=True, nullable=False)
-    logpass = db.Column(db.String(60), nullable=False)
-    logint = db.Column(db.Integer())
-    logbool = db.Column(db.Boolean, default=False)
+    lname = db.Column(db.String(20), unique=True, nullable=False)
+    lpass = db.Column(db.String(60), nullable=False)
+    lint = db.Column(db.Integer())
+    lbool = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
-        return f"logintable('{self.logname}', '{self.logpass}',
-                            '{self.logint}', '{self.logbool}')"
+        return f"""logintable('{self.lname}', '{self.lpass}', '{self.lint}',
+                '{self.lbool}')"""
 
 
 # new code added to make sure table is created
