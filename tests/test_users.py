@@ -20,8 +20,7 @@ class UsersTests(unittest.TestCase):
         return self.app.post('/register',
                             data=dict(username=username,
                                       email=email,
-                                      password=password, 
-                                      confirm_password=password),
+                                      password=password),
                             follow_redirects=True)
 
     def test_valid_user_registration(self):

@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+        <form class="form-login" method="POST" action="">
+         {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Login Today</legend>
+
+     <div class="form-group">
+    {{ form.logname.label(class="form-control-label") }}
+    {% if form.logname.errors %}
+       {{ form.logname(class="form-control form-control-lg is-invalid") }}
+       <div class="invalid-feedback">
+         {% for error in form.logname.errors%}
+             <span>{{error}}</span>
+         {% endfor %}
+       </div>
+      {% else %}
+        {{ form.logname(class="form-control form-control-lg") }}
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+        {{ form.logpass.label(class="form-control-label") }}
+        {% if form.logpass.errors %}
+          {{ form.logpass(class="form-control form-control-lg is-invalid") }}
+          <div class="invalid-feedback">
+            {% for error in form.logpass.errors%}
+                <span>{{error}}</span>
+            {% endfor %}
+          </div>
+      {% else %}
+          {{ form.logpass(class="form-control form-control-lg") }}
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+        {{ form.logint.label(class="form-control-label") }}
+        {% if form.logint.errors %}
+          {{ form.logint(class="form-control form-control-lg is-invalid") }}
+          <div class="invalid-feedback">
+            {% for error in form.logint.errors%}
+                <span>{{error}}</span>
+            {% endfor %}
+          </div>
+      {% else %}
+          {{ form.logint(class="form-control form-control-lg") }}
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+        {{ form.logbool.label(class="form-control-label") }}
+        {% if form.logbool.errors %}
+          {{ form.logbool(class="form-control form-control-lg is-invalid") }}
+          <div class="invalid-feedback">
+            {% for error in form.logbool.errors%}
+                <span>{{error}}</span>
+            {% endfor %}
+          </div>
+      {% else %}
+          {{ form.logbool(class="form-control form-control-lg") }}
+      {% endif %}
+    </div>
+    
+</fieldset>
+
+           <div class="form-group">
+             {{ form.submit(class="btn btn-outline-info") }}
+          </div>
+         </form>
+     </div>
+ {% endblock content %}
