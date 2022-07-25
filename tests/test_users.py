@@ -1,6 +1,6 @@
 import unittest, sys, os
 
-sys.path.append('../July12Folder')
+sys.path.append('../July25')
 from demo import app, db
 
 class UsersTests(unittest.TestCase):

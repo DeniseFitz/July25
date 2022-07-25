@@ -1,6 +1,6 @@
 import unittest, sys
 
-sys.path.append('../July12Folder') # imports python file from parent directory
+sys.path.append('../July25') # imports python file from parent directory
 from demo import app
 
 
