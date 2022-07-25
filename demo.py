@@ -12,7 +12,7 @@ from sqlalchemy import Integer, String, Boolean
     Once you populate you can query the database from the terminal,
     notice "demo" is the name of my python file, User is the
     class name and the table name is usertable
-
+    Should be in July25 github
     python3
     from demo import User
     User.query.all()
