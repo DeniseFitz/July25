@@ -1,4 +1,4 @@
-name: Check Style
+name: CheckFlow Style
 on: push
 
 jobs:
@@ -17,3 +17,7 @@ jobs:
 
       - name: Check Style
         run: pycodestyle --first *.py
+
+      - name: Test with pytest  # This is new!
+        run: |
+          python3 -m unittest test_basic.py
