@@ -5,7 +5,10 @@ from forms import RegistrationForm, LoginForm
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine, MetaData, Table, Column
 from sqlalchemy import Integer, String, Boolean
+import pandas as pd
+from datetime import datetime
 
+use_table = None
 
 '''
     https://flask.palletsprojects.com/en/2.1.x/patterns/wtforms/ good info
@@ -28,7 +31,7 @@ app.config['SECRET_KEY'] = 'fb93246348ed383a9de5b7e77ff8d579'
 
 
 # name of the database to create or use
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site2.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site25.db'
 db = SQLAlchemy(app)
 
 
@@ -64,6 +67,7 @@ db.create_all()
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
+    global use_table
     form = RegistrationForm(request.form)
     if form.validate_on_submit():
         if request.method == 'POST' and form.validate():
@@ -71,8 +75,18 @@ def register():
                           password=form.password.data)
             db.session.add(user_a)
             db.session.commit()
-            flash(f'Account created for {form.username.data}!', 'success')
-            return redirect(url_for('home'))
+            #flash(f'Account created for {form.username.data}!', 'success')
+            #return redirect(url_for('home'))
+            #create a dataframe from values entered on registration form
+            df = pd.DataFrame({"Name": [form.username.data],
+                   "Address": [form.email.data],
+                   "Pass": [form.password.data] }
+                   )
+            #print("Original DataFrame :", df) #prints to console
+
+            #Put dataframe with 1 row into a table 
+            use_table =  df.to_html(index=False,classes='table table-striped text-center', justify='center')
+            return redirect(url_for('usetable'))
     return render_template('register.html', title='Register', form=form)
 
 
@@ -102,6 +116,17 @@ def login():
             return redirect(url_for('home'))
     return render_template('login.html', title='Login', form=lform)
 
+@app.route('/usetable')
+def usetable():
+    global use_table
+    """Renders the dynamic page."""
+    return render_template(
+        'usetable.html',
+        title='Table Insert',
+        year=datetime.now().year,
+        message='Dynamic page.',
+        table=use_table
+    )
 
 # this should always be at the end avoids the need for environment variables
 if __name__ == '__main__':
